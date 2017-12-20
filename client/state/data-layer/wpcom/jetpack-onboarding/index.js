@@ -12,7 +12,51 @@ import { translate } from 'i18n-calypso';
 import { dispatchRequest } from 'state/data-layer/wpcom-http/utils';
 import { errorNotice } from 'state/notices/actions';
 import { http } from 'state/data-layer/wpcom-http/actions';
-import { JETPACK_ONBOARDING_SETTINGS_SAVE } from 'state/action-types';
+import {
+	JETPACK_ONBOARDING_SETTINGS_REQUEST,
+	JETPACK_ONBOARDING_SETTINGS_SAVE,
+} from 'state/action-types';
+import { addSettings as addSettingsAction } from '../../../jetpack-onboarding/actions';
+
+export const announceFetchFailure = ( { dispatch } ) =>
+	dispatch(
+		errorNotice( translate( 'Could not fetch settings from site. Please try again later.' ) )
+	);
+
+const addSettings = ( { dispatch }, action, response ) => {
+	const { siteId } = action;
+	const { data: settings } = response;
+
+	if ( ! settings ) {
+		return announceFetchFailure( { dispatch }, action );
+	}
+
+	dispatch( addSettingsAction( siteId, settings ) );
+};
+
+/**
+ * Dispatches a request to fetch settings for a given site
+ *
+ * @param   {Object} action Redux action
+ * @returns {Object} Dispatched http action
+ */
+export const fetchSettings = ( { dispatch }, action ) => {
+	const { siteId } = action;
+
+	return dispatch(
+		http(
+			{
+				apiVersion: '1.1',
+				method: 'GET',
+				path: '/jetpack-blogs/' + siteId + '/rest-api/',
+				query: {
+					path: '/',
+				},
+			},
+			action
+		)
+	);
+};
 
 /**
  * Dispatches a request to save particular onboarding settings on a site
@@ -53,6 +97,9 @@ export const announceSaveFailure = ( { dispatch } ) =>
 	dispatch( errorNotice( translate( 'An unexpected error occurred. Please try again later.' ) ) );
 
 export default {
+	[ JETPACK_ONBOARDING_SETTINGS_REQUEST ]: [
+		dispatchRequest( fetchSettings, addSettings, announceFetchFailure ),
+	],
 	[ JETPACK_ONBOARDING_SETTINGS_SAVE ]: [
 		dispatchRequest( saveJetpackOnboardingSettings, noop, announceSaveFailure ),
 	],
