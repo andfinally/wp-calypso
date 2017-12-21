@@ -63,10 +63,8 @@ describe( 'fetchSettings()', () => {
 					query: {
 						path: '/jetpack/v4/settings/',
 						query: JSON.stringify( {
-							onboarding: {
-								token,
-								jpUser: userEmail,
-							},
+							onboardingToken: token,
+							onboardingJpUser: userEmail,
 						} ),
 						json: true,
 					},
@@ -94,10 +92,8 @@ describe( 'fetchSettings()', () => {
 					query: {
 						path: '/jetpack/v4/settings/',
 						query: JSON.stringify( {
-							onboarding: {
-								token: null,
-								jpUser: null,
-							},
+							onboardingToken: null,
+							onboardingJpUser: null,
 						} ),
 						json: true,
 					},
