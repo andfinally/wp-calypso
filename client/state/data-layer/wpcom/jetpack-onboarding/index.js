@@ -23,9 +23,9 @@ export const announceFetchFailure = ( { dispatch } ) =>
 		errorNotice( translate( 'Could not fetch settings from site. Please try again later.' ) )
 	);
 
-const addSettings = ( { dispatch }, action, response ) => {
+const addSettings = ( { dispatch }, action, settings ) => {
 	const { siteId } = action;
-	const { data: settings } = response;
+	//const { data: settings } = response;
 
 	if ( ! settings ) {
 		return announceFetchFailure( { dispatch }, action );
@@ -40,8 +40,11 @@ const addSettings = ( { dispatch }, action, response ) => {
  * @param   {Object} action Redux action
  * @returns {Object} Dispatched http action
  */
-export const fetchSettings = ( { dispatch }, action ) => {
+export const fetchSettings = ( { dispatch, getState }, action ) => {
 	const { siteId } = action;
+	const state = getState();
+	const token = get( state.jetpackOnboarding.credentials, [ siteId, 'token' ], null );
+	const jpUser = get( state.jetpackOnboarding.credentials, [ siteId, 'userEmail' ], null );
 
 	return dispatch(
 		http(
@@ -50,7 +53,14 @@ export const fetchSettings = ( { dispatch }, action ) => {
 				method: 'GET',
 				path: '/jetpack-blogs/' + siteId + '/rest-api/',
 				query: {
-					path: '/',
+					path: '/jetpack/v4/settings/',
+					query: JSON.stringify( {
+						onboarding: {
+							token,
+							jpUser,
+						},
+					} ),
+					json: true,
 				},
 			},
 			action
