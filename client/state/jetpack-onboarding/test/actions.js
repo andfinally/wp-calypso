@@ -3,9 +3,14 @@
 /**
  * Internal dependencies
  */
-import { receiveJetpackOnboardingCredentials, saveJetpackOnboardingSettings } from '../actions';
+import {
+	addSettings,
+	receiveJetpackOnboardingCredentials,
+	saveJetpackOnboardingSettings,
+} from '../actions';
 import {
 	JETPACK_ONBOARDING_CREDENTIALS_RECEIVE,
+	JETPACK_ONBOARDING_SETTINGS_ADD,
 	JETPACK_ONBOARDING_SETTINGS_SAVE,
 } from 'state/action-types';
 
@@ -24,6 +29,23 @@ describe( 'actions', () => {
 				type: JETPACK_ONBOARDING_CREDENTIALS_RECEIVE,
 				siteId,
 				credentials,
+			} );
+		} );
+	} );
+
+	describe( 'addSettings()', () => {
+		test( 'should return a jetpack onboarding settings add action object', () => {
+			const settings = {
+				siteTitle: 'My awesome site title',
+				siteDescription: 'Not just another WordPress site',
+			};
+			const siteId = 12345678;
+			const action = addSettings( siteId, settings );
+
+			expect( action ).toEqual( {
+				type: JETPACK_ONBOARDING_SETTINGS_ADD,
+				siteId,
+				settings,
 			} );
 		} );
 	} );
