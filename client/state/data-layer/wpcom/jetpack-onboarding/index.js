@@ -16,7 +16,7 @@ import {
 	JETPACK_ONBOARDING_SETTINGS_REQUEST,
 	JETPACK_ONBOARDING_SETTINGS_SAVE,
 } from 'state/action-types';
-import { addSettings as addSettingsAction } from '../../../jetpack-onboarding/actions';
+import { addSettings as addSettingsAction } from 'state/jetpack-onboarding/actions';
 
 export const announceFetchFailure = ( { dispatch } ) =>
 	dispatch(
