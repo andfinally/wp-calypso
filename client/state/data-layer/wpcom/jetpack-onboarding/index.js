@@ -23,9 +23,8 @@ export const announceFetchFailure = ( { dispatch } ) =>
 		errorNotice( translate( 'Could not fetch settings from site. Please try again later.' ) )
 	);
 
-const addSettings = ( { dispatch }, action, settings ) => {
+const addSettings = ( { dispatch }, action, { data: settings } ) => {
 	const { siteId } = action;
-	//const { data: settings } = response;
 
 	if ( ! settings ) {
 		return announceFetchFailure( { dispatch }, action );
