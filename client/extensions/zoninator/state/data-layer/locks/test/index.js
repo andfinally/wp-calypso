@@ -14,7 +14,7 @@ import sinon from 'sinon';
 import { requestZoneLock, handleLockSuccess, handleLockFailure } from '../';
 import { http } from 'state/data-layer/wpcom-http/actions';
 import { errorNotice, removeNotice } from 'state/notices/actions';
-import { requestLock, updateLock } from 'zoninator/state/locks/actions';
+import { requestLock, requestLockError, updateLock } from 'zoninator/state/locks/actions';
 
 describe( '#requestZoneLock()', () => {
 	test( 'should dispatch a HTTP request to the lock endpoint', () => {
@@ -27,13 +27,18 @@ describe( '#requestZoneLock()', () => {
 
 		requestZoneLock( { dispatch }, action );
 
-		expect( dispatch ).to.have.been.calledWith( http( {
-			method: 'POST',
-			path: `/jetpack-blogs/123/rest-api/`,
-			query: {
-				path: `/zoninator/v1/zones/456/lock&_method=PUT`,
-			},
-		}, action ) );
+		expect( dispatch ).to.have.been.calledWith(
+			http(
+				{
+					method: 'POST',
+					path: '/jetpack-blogs/123/rest-api/',
+					query: {
+						path: '/zoninator/v1/zones/456/lock&_method=PUT',
+					},
+				},
+				action
+			)
+		);
 	} );
 
 	test( 'should dispatch `removeNotice`', () => {
@@ -51,56 +56,61 @@ describe( '#requestZoneLock()', () => {
 } );
 
 describe( '#handleLockSuccess()', () => {
-	test( 'should dispatch `updateLock` when refresh is set to false', () => {
-		const dispatch = sinon.spy();
-		const action = requestLock( 123, 456, false );
+	const response = {
+		data: {
+			timeout: 30,
+			max_lock_period: 600,
+		},
+	};
 
-		handleLockSuccess( { dispatch }, action );
-
-		expect( dispatch ).to.have.been.calledOnce;
-		expect( dispatch ).to.have.been.calledWithMatch(
-			omit( updateLock( 123, 456, true ),  [ 'created' ] )
-		);
-	} );
-
-	test( 'should not dispatch `updateLock` when refresh is set to true', () => {
+	test( 'should dispatch `updateLock`', () => {
 		const dispatch = sinon.spy();
 		const action = requestLock( 123, 456, true );
 
-		handleLockSuccess( { dispatch }, action );
+		handleLockSuccess( { dispatch }, action, response );
 
-		expect( dispatch ).to.not.have.been.called;
+		expect( dispatch ).to.have.been.calledOnce;
+		expect( dispatch ).to.have.been.calledWithMatch(
+			omit( updateLock( 123, 456, 30000, 600000, true ), [ 'expires' ] )
+		);
 	} );
 } );
 
 describe( '#handleLockFailure()', () => {
-	test( 'should dispatch `updateLock` if the zone is locked by another user', () => {
+	const blockedResponse = {
+		data: {
+			blocked: true,
+		},
+	};
+
+	test( 'should dispatch `requestLockError` if the zone is blocked by another user', () => {
 		const dispatch = sinon.spy();
 		const action = requestLock( 123, 456, true );
 
-		handleLockFailure( { dispatch }, action, {
-			status: 400,
-			data: {
-				locking_user: 12312,
-			},
-		} );
+		handleLockFailure( { dispatch }, action, blockedResponse );
 
-		expect( dispatch ).to.have.been.calledOnce;
-		expect( dispatch ).to.have.been.calledWithMatch(
-			omit( updateLock( 123, 456, false ), [ 'created' ] )
-		);
+		expect( dispatch ).to.have.been.calledWith( requestLockError( 123, 456, true ) );
+	} );
+
+	test( "should dispatch `requestLockError` with blocked set to false if the zone isn't blocked", () => {
+		const dispatch = sinon.spy();
+		const action = requestLock( 123, 456, true );
+
+		handleLockFailure( { dispatch }, action, {} );
+
+		expect( dispatch ).to.have.been.calledWith( requestLockError( 123, 456, false ) );
 	} );
 
 	test( 'should dispatch `errorNotice` if the locking process fails', () => {
 		const dispatch = sinon.spy();
 		const action = requestLock( 123, 456, false );
 
-		handleLockFailure( { dispatch }, action, { status: 400 } );
+		handleLockFailure( { dispatch }, action, {} );
 
-		expect( dispatch ).to.have.been.calledOnce;
-		expect( dispatch ).to.have.been.calledWith( errorNotice(
-			translate( 'There was a problem locking the zone. Please try again.' ),
-			{ id: 'zoninator-update-lock' },
-		) );
+		expect( dispatch ).to.have.been.calledWith(
+			errorNotice( translate( 'There was a problem locking the zone. Please try again.' ), {
+				id: 'zoninator-update-lock',
+			} )
+		);
 	} );
 } );
