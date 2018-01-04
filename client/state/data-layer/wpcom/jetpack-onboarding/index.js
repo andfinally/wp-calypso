@@ -16,7 +16,7 @@ import {
 	JETPACK_ONBOARDING_SETTINGS_REQUEST,
 	JETPACK_ONBOARDING_SETTINGS_SAVE,
 } from 'state/action-types';
-import { addSettings as addSettingsAction } from 'state/jetpack-onboarding/actions';
+import { receiveJetpackOnboardingSettings as receiveJetpackOnboardingSettingsAction } from 'state/jetpack-onboarding/actions';
 
 export const announceRequestFailure = ( { dispatch } ) =>
 	dispatch(
@@ -30,7 +30,7 @@ const receiveJetpackOnboardingSettings = ( { dispatch }, action, { data: setting
 		return announceRequestFailure( { dispatch }, action );
 	}
 
-	dispatch( addSettingsAction( siteId, settings ) );
+	dispatch( receiveJetpackOnboardingSettingsAction( siteId, settings ) );
 };
 
 /**

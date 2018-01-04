@@ -15,7 +15,7 @@ export const receiveJetpackOnboardingCredentials = ( siteId, credentials ) => ( 
 	credentials,
 } );
 
-export const addSettings = ( siteId, settings ) => ( {
+export const receiveJetpackOnboardingSettings = ( siteId, settings ) => ( {
 	type: JETPACK_ONBOARDING_SETTINGS_RECEIVE,
 	siteId,
 	settings,
