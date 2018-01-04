@@ -6,7 +6,7 @@
 import { http } from 'state/data-layer/wpcom-http/actions';
 import {
 	announceRequestFailure,
-	fetchSettings,
+	requestJetpackOnboardingSettings,
 	saveJetpackOnboardingSettings,
 	announceSaveFailure,
 } from '../';
@@ -29,7 +29,7 @@ describe( 'announceRequestFailure()', () => {
 	} );
 } );
 
-describe( 'fetchSettings()', () => {
+describe( 'requestJetpackOnboardingSettings()', () => {
 	const dispatch = jest.fn();
 	const token = 'abcd1234';
 	const userEmail = 'example@yourgroovydomain.com';
@@ -52,7 +52,7 @@ describe( 'fetchSettings()', () => {
 			},
 		} );
 
-		fetchSettings( { dispatch, getState }, action );
+		requestJetpackOnboardingSettings( { dispatch, getState }, action );
 
 		expect( dispatch ).toHaveBeenCalledWith(
 			http(
@@ -83,7 +83,7 @@ describe( 'fetchSettings()', () => {
 			},
 		} );
 
-		fetchSettings( { dispatch, getState }, action );
+		requestJetpackOnboardingSettings( { dispatch, getState }, action );
 
 		expect( dispatch ).toHaveBeenCalledWith(
 			http(
