@@ -54,8 +54,10 @@ export const fetchSettings = ( { dispatch, getState }, action ) => {
 				query: {
 					path: '/jetpack/v4/settings/',
 					query: JSON.stringify( {
-						onboardingToken: token,
-						onboardingJpUser: jpUser,
+						onboarding: {
+							token,
+							jpUser,
+						},
 					} ),
 					json: true,
 				},
