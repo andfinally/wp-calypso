@@ -5,18 +5,18 @@
  */
 import { http } from 'state/data-layer/wpcom-http/actions';
 import {
-	announceFetchFailure,
+	announceRequestFailure,
 	fetchSettings,
 	saveJetpackOnboardingSettings,
 	announceSaveFailure,
 } from '../';
 import { JETPACK_ONBOARDING_SETTINGS_SAVE } from 'state/action-types';
 
-describe( 'announceFetchFailure()', () => {
+describe( 'announceRequestFailure()', () => {
 	const dispatch = jest.fn();
 
 	test( 'should trigger an error notice upon unsuccessful save request', () => {
-		announceFetchFailure( { dispatch } );
+		announceRequestFailure( { dispatch } );
 
 		expect( dispatch ).toHaveBeenCalledWith(
 			expect.objectContaining( {

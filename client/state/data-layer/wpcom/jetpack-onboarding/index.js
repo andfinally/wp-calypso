@@ -18,7 +18,7 @@ import {
 } from 'state/action-types';
 import { addSettings as addSettingsAction } from 'state/jetpack-onboarding/actions';
 
-export const announceFetchFailure = ( { dispatch } ) =>
+export const announceRequestFailure = ( { dispatch } ) =>
 	dispatch(
 		errorNotice( translate( 'Could not fetch settings from site. Please try again later.' ) )
 	);
@@ -27,7 +27,7 @@ const receiveJetpackOnboardingSettings = ( { dispatch }, action, { data: setting
 	const { siteId } = action;
 
 	if ( ! settings ) {
-		return announceFetchFailure( { dispatch }, action );
+		return announceRequestFailure( { dispatch }, action );
 	}
 
 	dispatch( addSettingsAction( siteId, settings ) );
@@ -110,7 +110,7 @@ export default {
 		dispatchRequest(
 			requestJetpackOnboardingSettings,
 			receiveJetpackOnboardingSettings,
-			announceFetchFailure
+			announceRequestFailure
 		),
 	],
 	[ JETPACK_ONBOARDING_SETTINGS_SAVE ]: [
