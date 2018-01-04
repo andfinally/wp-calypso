@@ -39,7 +39,7 @@ const addSettings = ( { dispatch }, action, { data: settings } ) => {
  * @param   {Object} action Redux action
  * @returns {Object} Dispatched http action
  */
-export const fetchSettings = ( { dispatch, getState }, action ) => {
+export const requestJetpackOnboardingSettings = ( { dispatch, getState }, action ) => {
 	const { siteId } = action;
 	const state = getState();
 	const token = get( state.jetpackOnboarding.credentials, [ siteId, 'token' ], null );
@@ -107,7 +107,7 @@ export const announceSaveFailure = ( { dispatch } ) =>
 
 export default {
 	[ JETPACK_ONBOARDING_SETTINGS_REQUEST ]: [
-		dispatchRequest( fetchSettings, addSettings, announceFetchFailure ),
+		dispatchRequest( requestJetpackOnboardingSettings, addSettings, announceFetchFailure ),
 	],
 	[ JETPACK_ONBOARDING_SETTINGS_SAVE ]: [
 		dispatchRequest( saveJetpackOnboardingSettings, noop, announceSaveFailure ),
