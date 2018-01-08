@@ -4,9 +4,9 @@
  * External dependencies
  */
 import React from 'react';
-import Gridicon from 'gridicons';
-import { compact, map } from 'lodash';
 import { connect } from 'react-redux';
+import Gridicon from 'gridicons';
+import { compact, get, map } from 'lodash';
 import { localize } from 'i18n-calypso';
 
 /**
@@ -20,6 +20,8 @@ import {
 	JETPACK_ONBOARDING_STEPS as STEPS,
 	JETPACK_ONBOARDING_SUMMARY_STEPS as SUMMARY_STEPS,
 } from '../constants';
+import { saveJetpackOnboardingSettings } from 'state/jetpack-onboarding/actions';
+import { getRequest } from 'state/selectors';
 
 class JetpackOnboardingSummaryStep extends React.PureComponent {
 	renderCompleted = () => {
@@ -57,7 +59,9 @@ class JetpackOnboardingSummaryStep extends React.PureComponent {
 	};
 
 	render() {
-		const { translate } = this.props;
+		const { translate, hasWooCommerceInstallFinished } = this.props;
+		console.log( 'hasWooCommerceInstallFinished', hasWooCommerceInstallFinished );
+
 		const headerText = translate( 'Congratulations! Your site is on its way.' );
 		const subHeaderText = translate(
 			'You enabled Jetpack and unlocked dozens of website-bolstering features. Continue preparing your site below.'
@@ -95,9 +99,15 @@ class JetpackOnboardingSummaryStep extends React.PureComponent {
 	}
 }
 
-export default connect( () => {
-	const tasks = compact( [] );
-	return {
-		tasks,
-	};
-} )( localize( JetpackOnboardingSummaryStep ) );
+export default connect( ( state, { siteId } ) => ( {
+	hasWooCommerceInstallFinished: get(
+		getRequest(
+			state,
+			saveJetpackOnboardingSettings( siteId, {
+				installWooCommerce: true,
+			} )
+		),
+		'hasLoaded'
+	),
+	tasks: compact( [] ),
+} ) )( localize( JetpackOnboardingSummaryStep ) );
