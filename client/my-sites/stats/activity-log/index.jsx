@@ -24,6 +24,7 @@ import ErrorBanner from '../activity-log-banner/error-banner';
 import JetpackColophon from 'components/jetpack-colophon';
 import Main from 'components/main';
 import ProgressBanner from '../activity-log-banner/progress-banner';
+import ProvisioningNotice from './provisioning-notice';
 import QueryActivityLog from 'components/data/query-activity-log';
 import QueryJetpackCredentials from 'components/data/query-jetpack-credentials';
 import QueryRewindState from 'components/data/query-rewind-state';
@@ -606,6 +607,7 @@ class ActivityLog extends Component {
 				<SidebarNavigation />
 				<StatsNavigation selectedItem={ 'activity' } siteId={ siteId } slug={ slug } />
 				{ 'awaitingCredentials' === rewindState.state && <ActivityLogCredentialsNotice /> }
+				{ 'provisioning' === rewindState.state && <ProvisioningNotice /> }
 				{ this.renderErrorMessage() }
 				{ hasFirstBackup && this.renderMonthNavigation() }
 				{ this.renderActionProgress() }
