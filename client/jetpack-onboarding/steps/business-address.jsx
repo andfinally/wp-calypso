@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import { map } from 'lodash';
@@ -61,7 +61,7 @@ class JetpackOnboardingBusinessAddressStep extends React.PureComponent {
 		);
 
 		return (
-			<Fragment>
+			<div className="steps__main">
 				<DocumentHead title={ translate( 'Business Address ‹ Jetpack Onboarding' ) } />
 				<PageViewTracker
 					path={ '/jetpack/onboarding/' + STEPS.BUSINESS_ADDRESS + '/:site' }
@@ -88,7 +88,7 @@ class JetpackOnboardingBusinessAddressStep extends React.PureComponent {
 						</Button>
 					</form>
 				</Card>
-			</Fragment>
+			</div>
 		);
 	}
 }
