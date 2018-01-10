@@ -17,7 +17,12 @@ export const ProvisioningNotice = ( { translate } ) => (
 			<Gridicon icon="history" size={ 24 } />
 		</span>
 		<span className="activity-log__provisioning-notice-text">
-			{ translate( 'We are currently configuring your site to start protecting it with Rewind.' ) }
+			{ translate(
+				'Your site is currently being configured. ' +
+					"There's nothing else you need to do right now — " +
+					'check back soon to see your updated Activity Log ' +
+					'or restore backups.'
+			) }
 		</span>
 	</CompactCard>
 );
